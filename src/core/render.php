@@ -36,12 +36,12 @@ function renderMedia($path)
     }
 
     return <<<MEDIA
-    <a href='$path'><div class="entry">
-        <div class="filename">$base</div>
+    <a href='$path'><figure class="entry">
+        <figcaption class="filename">$base</figcaption>
         <div class='entry-object'>
             $rendered
         </div>
-    </div></a>
+    </figure></a>
 MEDIA;
 }
 
@@ -87,4 +87,17 @@ function renderAssets($path)
     }
 
     echo pageMediaEnd();
+}
+
+function renderReadmeMD($path)
+{
+    $readmemd_path = MEDIA_ROOT . $path . DIRECTORY_SEPARATOR . 'readme.md';
+
+    if (file_exists($readmemd_path)) {
+        $Parsedown = new Parsedown();
+
+        $compiled = $Parsedown->text(file_get_contents($readmemd_path));
+        echo "<div class='readmemd'>$compiled</div>";
+    }
+
 }
