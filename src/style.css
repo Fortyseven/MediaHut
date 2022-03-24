@@ -1,0 +1,68 @@
+body {
+  padding: 1em;
+}
+
+img,
+video,
+audio {
+  width: 100%;
+  height: 100%;
+}
+
+hr.section {
+  margin: 3rem 1rem;
+}
+
+.media-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(100px, auto);
+  gap: 2em;
+}
+
+.dir-entry {
+  background-color: #f003;
+  height: 100%;
+  overflow: hidden;
+  box-shadow: 0 0 20px black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  font-weight: bold;
+  text-decoration: underline;
+  border-radius: 10px;
+  background: rgb(2, 0, 36);
+  background: linear-gradient(
+    52deg,
+    rgba(0, 0, 0, 0.15) 0%,
+    rgba(255, 255, 255, 0.25) 100%
+  );
+}
+
+.entry {
+  background-color: #0003;
+  overflow: hidden;
+  box-shadow: 0 3px 20px black;
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  transition: box-shadow 250ms, top 250ms;
+  position: relative;
+  padding: 0.25em;
+}
+
+.entry:hover {
+  box-shadow: 0 0 3px black;
+  top: 3px;
+}
+
+.filename {
+  font-size: 0.8em;
+  text-align: center;
+  overflow: hidden;
+  padding: 0.25em;
+  text-transform: capitalize;
+  color: white;
+  line-height: 1;
+}

@@ -1,0 +1,4 @@
+
+HEADER_HTML);
+
+define('FOOTER_HTML', <<<FOOTER_HTML

@@ -1,0 +1,31 @@
+{
+    "name": "mediahut",
+    "version": "1.0.0",
+    "description": "The truly single-file PHP no-database media gallery.",
+    "main": "build/index.php",
+    "watch": {
+        "build": {
+            "patterns": [
+                "src",
+                "src/core"
+            ],
+            "extensions": "php,html,css",
+            "quiet": true,
+            "ignore": "src/style.min.css"
+        }
+    },
+    "scripts": {
+        "build": "./build.sh",
+        "dev": "npm run build && npm-watch",
+        "serve": "npm run build && php -S 0:4000 -t build",
+        "upload": "scp index.php media.network47.org:~/media.network47.org"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "css-minify": "^2.0.0",
+        "install": "^0.13.0",
+        "npm": "^8.5.5",
+        "npm-watch": "^0.11.0"
+    }
+}
