@@ -6,4 +6,4 @@ cat src/stage0.php src/html_header.html src/stage1.php src/html_footer.html src/
 
 cat src/core/*.php >>build/index.php
 
-echo "main();" >>build/index.php
+echo "?><?php main();" >>build/index.php
