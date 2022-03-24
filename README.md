@@ -27,8 +27,4 @@ I keep a fresh copy in the `/build` directory of the `master` build. Literally j
 
 I built this for my secret cave of Max Headroom and V (1983) pop culture worship. Check it out over here: https://media.network47.org.
 
-## License
-
-There is none. Do what you wish with this. Credit is nice, but there's no gun to your head.
-
 <img src="https://i.imgur.com/bUtx4BG.png" width="512"/>
