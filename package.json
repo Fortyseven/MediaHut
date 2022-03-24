@@ -18,7 +18,7 @@
         "build": "./build.sh",
         "dev": "npm run build && npm-watch",
         "serve": "npm run build && php -S 0:4000 -t build",
-        "upload": "scp index.php media.network47.org:~/media.network47.org"
+        "upload": "scp build/index.php media.network47.org:~/media.network47.org"
     },
     "author": "",
     "license": "ISC",
