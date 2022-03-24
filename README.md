@@ -23,6 +23,10 @@ Don't overthink the capabilities of this: you won't find tags, comments, or much
 
 I keep a fresh copy in the `/build` directory of the `master` build. Literally just copy/paste, edit the config block pointing to a media path (it defaults to `/media`), and off you go.
 
+## Other Features
+
+- If a directory has an `readme.md` file, it will be rendered below the directories and media.
+
 ## Demo
 
 I built this for my secret cave of Max Headroom and V (1983) pop culture worship. Check it out over here: https://media.network47.org.

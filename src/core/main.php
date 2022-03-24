@@ -53,15 +53,7 @@ function main()
 
     renderDirectories($userPath);
     renderAssets($userPath);
-
-    $indexmd_path = MEDIA_ROOT . $userPath . DIRECTORY_SEPARATOR . 'index.md';
-
-    if (file_exists($indexmd_path)) {
-        $Parsedown = new Parsedown();
-
-        $compiled = $Parsedown->text(file_get_contents($indexmd_path));
-        echo "<div class='indexmd'>$compiled</div>";
-    }
+    renderReadmeMD($userPath);
 
     echo pageFooter();
 }

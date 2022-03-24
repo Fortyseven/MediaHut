@@ -34,7 +34,7 @@ define('FOOTER_HTML', <<<FOOTER_HTML
 </html>
 FOOTER_HTML);
 define('CSS', <<<CSS
-body{padding:1em}audio,img,video{height:100%;width:100%}hr.section{margin:3rem 1rem}.media-container{display:grid;gap:2em;grid-auto-rows:minmax(100px,auto);grid-template-columns:repeat(4,1fr)}.dir-entry{background-color:#f003;background:#020024;background:linear-gradient(52deg,rgba(0,0,0,.15),hsla(0,0%,100%,.25));border-radius:10px;box-shadow:0 0 20px #000;font-weight:700;height:100%;justify-content:center;text-align:center;text-decoration:underline}.dir-entry,.entry{display:flex;flex-direction:column;overflow:hidden}.entry{background-color:#0003;box-shadow:0 3px 20px #000;justify-content:top;padding:.25em;position:relative;transition:box-shadow .25s,top .25s}.entry:hover{box-shadow:0 0 3px #000;top:3px}.filename{color:#fff;font-size:.8em;line-height:1;overflow:hidden;padding:.25em;text-align:center;text-transform:capitalize}.indexmd{background-color:hsla(0,0%,100%,.01);border-radius:10px;margin-top:2rem;padding:1em}
+body{padding:1em}audio,img,video{height:100%;width:100%}hr.section{margin:3rem 1rem}.media-container{display:grid;gap:2em;grid-auto-rows:minmax(100px,auto);grid-template-columns:repeat(4,1fr)}.dir-entry{background-color:#f003;background:#020024;background:linear-gradient(52deg,rgba(0,0,0,.15),hsla(0,0%,100%,.25));border-radius:10px;box-shadow:0 0 20px #000;font-weight:700;height:100%;justify-content:center;text-align:center;text-decoration:underline}.dir-entry,.entry{display:flex;flex-direction:column;overflow:hidden}.entry{background-color:#0003;box-shadow:0 3px 20px #000;justify-content:top;padding:.25em;position:relative;transition:box-shadow .25s,top .25s}.entry:hover{box-shadow:0 0 3px #000;top:3px}.filename{color:#fff;font-size:.8em;line-height:1;overflow:hidden;padding:.25em;text-align:center;text-transform:capitalize}.readmemd{background-color:hsla(0,0%,100%,.01);border-radius:10px;margin-top:2rem;padding:1em}
 CSS);
 ?>
 <?php
@@ -91,15 +91,7 @@ function main()
 
     renderDirectories($userPath);
     renderAssets($userPath);
-
-    $indexmd_path = MEDIA_ROOT . $userPath . DIRECTORY_SEPARATOR . 'index.md';
-
-    if (file_exists($indexmd_path)) {
-        $Parsedown = new Parsedown();
-
-        $compiled = $Parsedown->text(file_get_contents($indexmd_path));
-        echo "<div class='indexmd'>$compiled</div>";
-    }
+    renderReadmeMD($userPath);
 
     echo pageFooter();
 }
@@ -1964,12 +1956,12 @@ function renderMedia($path)
     }
 
     return <<<MEDIA
-    <a href='$path'><div class="entry">
-        <div class="filename">$base</div>
+    <a href='$path'><figure class="entry">
+        <figcaption class="filename">$base</figcaption>
         <div class='entry-object'>
             $rendered
         </div>
-    </div></a>
+    </figure></a>
 MEDIA;
 }
 
@@ -2015,5 +2007,18 @@ function renderAssets($path)
     }
 
     echo pageMediaEnd();
+}
+
+function renderReadmeMD($path)
+{
+    $readmemd_path = MEDIA_ROOT . $path . DIRECTORY_SEPARATOR . 'readme.md';
+
+    if (file_exists($readmemd_path)) {
+        $Parsedown = new Parsedown();
+
+        $compiled = $Parsedown->text(file_get_contents($readmemd_path));
+        echo "<div class='readmemd'>$compiled</div>";
+    }
+
 }
 ?><?php main();
