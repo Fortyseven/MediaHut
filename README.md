@@ -10,10 +10,9 @@ Don't overthink the capabilities of this: you won't find tags, comments, or much
 
 ## Problems (or "To Do")
 
-- Currently does not generate thumbnails. So it's literally downloading all the media data (for gifs and images, at least) at once. Hope you're not on a mobile plan. _This is at the top of my to-do list._
 - Clicking on a file just opens it up directly in the browser, instead of something nicer. Not exactly in a hurry to change that, but it's on my mind.
 
-- Persistent config data would be nice, but since it's currently just a couple at the moment, you'll survive.
+- Persistent config data would be nice, but since it's currently just a handfulcouple at the moment, you'll survive.
 
 - This could probably all be implemented better -- the build process, most especially. `build.sh` is a real shit-show, but it works.
 
@@ -26,6 +25,8 @@ I keep a fresh copy in the `/build` directory of the `master` build. Literally j
 ## Other Features
 
 - If a directory has an `readme.md` file, it will be rendered below the directories and media.
+
+- Will create and serve basic thumbnail images from the .data directory.
 
 ## Demo
 
