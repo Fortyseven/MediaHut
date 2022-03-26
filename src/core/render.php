@@ -15,8 +15,10 @@ function getRenderer($path)
         case 'jpg':
         case 'jpeg':
         case 'png':
-        case 'gif':
         case 'webp':
+            $thumb = new ThumbnailImage($path, $ext);
+            return $thumb->getRenderer();
+        case 'gif':
             return "<img src='$path'/>";
         default:
             return "";

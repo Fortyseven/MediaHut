@@ -47,6 +47,8 @@ function main()
         }
     }
 
+    $data = new Data();
+
     echo pageHeader($userPath);
 
     echo "<h1><a href='index.php?path=" . dirname($userPath, 1) . "'>" . $userPath . "</a></h1>";

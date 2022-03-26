@@ -1,8 +1,24 @@
 <?php
-/* This code is built by a script so it's ugly as hell. But easier to maintain. */
-/* ------------------- CONFIG --------------------------- */
-define('MEDIA_ROOT', "./media");
+# This code is built by a script so it's ugly as hell. But easier to maintain.
+# And this is a fucking mess anyway; I'm commiting WIP garbage so by all means,
+# delight in the chaos.
+
+# ------------------- CONFIG ---------------------------
+# Where the media files are; this needs to be inside the public-facing document root.
+define('MEDIA_ROOT', "media");
+
+# This is where we'll keep persistent content, like thumbnails and (later) configs
+# Nothing of security-related importance will go here so don't worry if anyone gets
+# in there and starts poking around. "Oh boy: all the thumbnails!"
+define('DATA_ROOT', ".data");
+define('THUMBS_ROOT', DATA_ROOT . DIRECTORY_SEPARATOR. "thumbs"); # leave empty to disable
+define('THUMB_WIDTH', 200);
+
+# We'll only show these file types; everything else is ignored.
 define('MEDIA_TYPES', "jpg,jpeg,gif,png,bmp,webp,mp4,mkv,mov,wav,ogg,mp3,pdf,txt");
+
+/* ------------------------------------------------------ */
+/* -------- Nothing below here is confgurable. ---------- */
 /* ------------------------------------------------------ */
 
 $has_dirs = false;
@@ -34,8 +50,24 @@ define('FOOTER_HTML', <<<FOOTER_HTML
 </html>
 FOOTER_HTML);
 define('CSS', <<<CSS
-body{padding:1em}audio,img,video{height:100%;width:100%}hr.section{margin:3rem 1rem}.media-container{display:grid;gap:2em;grid-auto-rows:minmax(100px,auto);grid-template-columns:repeat(4,1fr)}.dir-entry{background-color:#f003;background:#020024;background:linear-gradient(52deg,rgba(0,0,0,.15),hsla(0,0%,100%,.25));border-radius:10px;box-shadow:0 0 20px #000;font-weight:700;height:100%;justify-content:center;text-align:center;text-decoration:underline}.dir-entry,.entry{display:flex;flex-direction:column;overflow:hidden}.entry{background-color:#0003;box-shadow:0 3px 20px #000;justify-content:top;padding:.25em;position:relative;transition:box-shadow .25s,top .25s}.entry:hover{box-shadow:0 0 3px #000;top:3px}.filename{color:#fff;font-size:.8em;line-height:1;overflow:hidden;padding:.25em;text-align:center;text-transform:capitalize}.readmemd{background-color:hsla(0,0%,100%,.01);border-radius:10px;margin-top:2rem;padding:1em}
+body{padding:1em}audio,img,video{height:100%;width:100%}hr.section{margin:3rem 1rem}.media-container{display:grid;gap:2em;grid-auto-rows:minmax(200px,auto);grid-template-columns:repeat(4,1fr)}.dir-entry{background-color:#f003;background:#020024;background:linear-gradient(52deg,rgba(0,0,0,.15),hsla(0,0%,100%,.25));border-radius:10px;box-shadow:0 0 20px #000;font-weight:700;height:100%;justify-content:center;text-align:center;text-decoration:underline}.dir-entry,.entry{display:flex;flex-direction:column;overflow:hidden}.entry{background-color:#0003;box-shadow:0 3px 20px #000;justify-content:top;padding:.25em;position:relative;transition:box-shadow .25s,top .25s}.entry:hover{box-shadow:0 0 3px #000;top:3px}.filename{color:#fff;font-size:.8em;line-height:1;overflow:hidden;padding:.25em;text-align:center;text-transform:capitalize}.readmemd{background-color:hsla(0,0%,100%,.01);border-radius:10px;margin-top:2rem;padding:1em}
 CSS);
+?>
+<?php
+
+// more will happen here; probably
+class Data
+{
+    public function __construct()
+    {
+        if (!file_exists(DATA_ROOT)) {
+            mkdir(DATA_ROOT);
+        }
+        if (!file_exists(THUMBS_ROOT)) {
+            mkdir(THUMBS_ROOT);
+        }
+    }
+}
 ?>
 <?php
 /* -- PAGE TEMPLATES --------------------------- */
@@ -84,6 +116,8 @@ function main()
             die();
         }
     }
+
+    $data = new Data();
 
     echo pageHeader($userPath);
 
@@ -1935,8 +1969,10 @@ function getRenderer($path)
         case 'jpg':
         case 'jpeg':
         case 'png':
-        case 'gif':
         case 'webp':
+            $thumb = new ThumbnailImage($path, $ext);
+            return $thumb->getRenderer();
+        case 'gif':
             return "<img src='$path'/>";
         default:
             return "";
@@ -2021,4 +2057,78 @@ function renderReadmeMD($path)
     }
 
 }
-?><?php main();
+?>
+<?php
+
+class ThumbnailImage
+{
+    private $file_hash;
+    private $thumb_path;
+
+    public function __construct($path, $extension)
+    {
+        $this->file_hash = sha1($path);
+        $this->thumb_path = THUMBS_ROOT . DIRECTORY_SEPARATOR . $this->file_hash . ".jpg";
+
+        if (!file_exists($this->thumb_path)) {
+            $this->rebuildThumbnail($path, $extension);
+        }
+    }
+
+    private function rebuildThumbnail($path, $extension)
+    {
+        if (THUMBS_ROOT) {
+            # the `imagecreatefrom*` family seems to have a hate-on for single quotes
+            $sanitized_path = html_entity_decode($path, ENT_QUOTES);
+
+            switch ($extension) {
+                case 'webp':
+                    $image_src = imagecreatefromwebp($sanitized_path);
+                    break;
+                case 'png':
+                    $image_src = imagecreatefrompng($sanitized_path);
+                    break;
+                # assume jpeg otherwise
+                case 'jpg':
+                case 'jpeg':
+                default:
+                    $image_src = imagecreatefromjpeg($sanitized_path);
+                    break;
+            }
+
+            if ($image_src) {
+
+                $image_width = imagesx($image_src);
+                $image_height = imagesy($image_src);
+
+                $thumb_height = floor($image_height * (THUMB_WIDTH / $image_width));
+
+                $image_dest = imagecreatetruecolor(THUMB_WIDTH, $thumb_height);
+
+                imagecopyresampled(
+                    $image_dest, $image_src,
+                    0, 0, 0, 0,
+                    THUMB_WIDTH, $thumb_height,
+                    $image_width, $image_height);
+
+                imagejpeg($image_dest, $this->thumb_path);
+
+                imagedestroy($image_src);
+                imagedestroy($image_dest);
+            } else {
+                # TODO: the image failed to open, so just serve the
+                #       original image for now. But we need a way
+                #       to report the failure.
+                $this->thumb_path = $path;
+            }
+        } else {
+            # serve the original file if thumbs are disabled
+            $this->thumb_path = $path;
+        }
+    }
+
+    public function getRenderer()
+    {
+        return "<img src='$this->thumb_path'/>";
+    }
+}?><?php main();
