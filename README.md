@@ -28,8 +28,6 @@ I keep a fresh copy in the `/build` directory of the `master` build. Literally j
 
 - Will create and serve basic thumbnail images from the .data directory.
 
-## Demo
-
-I built this for my secret cave of Max Headroom and V (1983) pop culture worship. Check it out over here: https://media.network47.org.
+## What's it look like?
 
 <img src="https://i.imgur.com/bUtx4BG.png" width="512"/>
